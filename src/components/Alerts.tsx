@@ -132,7 +132,7 @@ export function Alerts({ alerts, onUpdateAlerts, onClose, onCreateRecurringTrans
               <span className="text-sm font-medium text-gray-700">Filter:</span>
               <select
                 value={filter}
-                onChange={(e) => {
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   const value = e.target.value;
                   if (value === 'all' || value === 'unread' || value === 'high' || value === 'medium' || value === 'low') {
                     setFilter(value);
