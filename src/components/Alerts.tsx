@@ -132,7 +132,7 @@ export function Alerts({ alerts, onUpdateAlerts, onClose, onCreateRecurringTrans
               <span className="text-sm font-medium text-gray-700">Filter:</span>
               <select
                 value={filter}
-                onChange={(e) => setFilter(e.target.value as any)}
+                onChange={(e) => setFilter(e.target.value as 'all' | 'unread' | 'high' | 'medium' | 'low')}
                 className="text-sm border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 <option value="all">All Alerts</option>

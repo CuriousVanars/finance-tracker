@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { RecurringTransaction, Category } from '@/types';
-import { X, Plus, Repeat, Calendar, Play, Pause, Edit2, Trash2, Clock } from 'lucide-react';
+import { X, Plus, Repeat, Calendar, Play, Pause, Trash2 } from 'lucide-react';
 import { v4 as uuidv4 } from 'uuid';
 import { formatCurrency } from '@/utils/calculations';
 
@@ -33,7 +33,6 @@ export function RecurringTransactions({
 
   const calculateNextDueDate = (startDate: string, frequency: string): string => {
     const start = new Date(startDate);
-    const now = new Date();
     
     switch (frequency) {
       case 'daily':

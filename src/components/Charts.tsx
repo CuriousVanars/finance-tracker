@@ -7,7 +7,7 @@ interface ChartsProps {
   dashboardData: DashboardData;
 }
 
-const COLORS = ['#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6', '#F97316'];
+// const COLORS = ['#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#3B82F6', '#F97316']; // Unused but kept for future use
 
 export function Charts({ dashboardData }: ChartsProps) {
   // Prepare data for budget vs actual comparison
@@ -29,14 +29,14 @@ export function Charts({ dashboardData }: ChartsProps) {
     },
   ];
 
-  // Prepare data for expense breakdown pie chart
-  const expenseBreakdownData = dashboardData.expense_summary
-    .filter(item => item.actual > 0)
-    .map((item, index) => ({
-      name: item.category,
-      value: item.actual,
-      color: COLORS[index % COLORS.length],
-    }));
+  // Prepare data for expense breakdown pie chart (unused but kept for future use)
+  // const expenseBreakdownData = dashboardData.expense_summary
+  //   .filter(item => item.actual > 0)
+  //   .map((item, index) => ({
+  //     name: item.category,
+  //     value: item.actual,
+  //     color: COLORS[index % COLORS.length],
+  //   }));
 
   // Prepare data for Income-Expenses-Savings pie chart
   const incomeExpensesSavingsData = [

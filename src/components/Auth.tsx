@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
-import { Eye, EyeOff, Mail, Lock, User, DollarSign } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, DollarSign } from 'lucide-react'
 
 export function Auth() {
   const [isLogin, setIsLogin] = useState(true)
@@ -28,8 +28,8 @@ export function Auth() {
         if (error) throw error
         setError('Please check your email for verification link!')
       }
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
       setLoading(false)
     }

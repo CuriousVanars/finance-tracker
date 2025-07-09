@@ -64,7 +64,7 @@ export default function Dashboard() {
         LocalStorage.saveGoals(updatedGoals);
       }
     }
-  }, [transactions]);
+  }, [transactions, goals]);
 
   useEffect(() => {
     // Check for recurring transaction alerts
