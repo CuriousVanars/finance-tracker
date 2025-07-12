@@ -63,7 +63,7 @@ export function Charts({ dashboardData }: ChartsProps) {
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Financial Overview</h3>
         {incomeExpensesSavingsData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={400}>
+          <ResponsiveContainer width="100%" height={300} className="min-h-[250px]">
             <PieChart>
               <Pie
                 data={incomeExpensesSavingsData}
@@ -73,7 +73,7 @@ export function Charts({ dashboardData }: ChartsProps) {
                 label={({ name, percent, value }) => 
                   `${name}: ₹${Number(value).toLocaleString()} (${((percent ?? 0) * 100).toFixed(1)}%)`
                 }
-                outerRadius={120}
+                outerRadius={80}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -85,7 +85,7 @@ export function Charts({ dashboardData }: ChartsProps) {
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex items-center justify-center h-[400px] text-gray-500">
+          <div className="flex items-center justify-center h-[250px] text-gray-500">
             <div className="text-center">
               <p>No financial data available</p>
               <p className="text-sm">Add some transactions to see the overview</p>
@@ -97,11 +97,11 @@ export function Charts({ dashboardData }: ChartsProps) {
       {/* Budget vs Actual Bar Chart */}
       <div className="bg-white rounded-lg shadow p-6">
         <h3 className="text-lg font-bold text-gray-900 mb-4">Budget vs Actual</h3>
-        <ResponsiveContainer width="100%" height={400}>
+        <ResponsiveContainer width="100%" height={300} className="min-h-[250px]">
           <BarChart data={budgetVsActualData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis tickFormatter={(value) => `₹${value.toLocaleString()}`} />
+            <XAxis dataKey="name" fontSize={12} />
+            <YAxis tickFormatter={(value) => `₹${value.toLocaleString()}`} fontSize={12} />
             <Tooltip formatter={(value) => [`₹${Number(value).toLocaleString()}`, '']} />
             <Bar dataKey="budgeted" fill="#94A3B8" name="Budgeted" />
             <Bar dataKey="actual" fill="#3B82F6" name="Actual" />

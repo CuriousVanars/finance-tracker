@@ -232,14 +232,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-40">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex-1 min-w-0">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 truncate">Finance Tracker</h1>
-              <p className="text-sm text-gray-600 hidden sm:block">Track every penny you spend or save</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate">Finance Tracker</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Track every penny you spend or save</p>
             </div>
             
             {/* Desktop Navigation */}
@@ -247,7 +247,7 @@ export default function Dashboard() {
               <ExportButton />
               <button
                 onClick={() => setShowAlerts(true)}
-                className="relative inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="relative inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <Bell className="h-4 w-4 mr-2" />
                 Alerts
@@ -259,28 +259,28 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => setShowGoals(true)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <Target className="h-4 w-4 mr-2" />
                 Goals
               </button>
               <button
                 onClick={() => setShowRecurringTransactions(true)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <Repeat className="h-4 w-4 mr-2" />
                 Recurring
               </button>
               <button
                 onClick={() => setShowSettings(!showSettings)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <Settings className="h-4 w-4 mr-2" />
                 Settings
               </button>
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center px-3 py-2 border border-red-300 rounded-md text-sm font-medium text-red-700 bg-white hover:bg-red-50"
+                className="inline-flex items-center px-3 py-2 border border-red-300 dark:border-red-600 rounded-md text-sm font-medium text-red-700 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900"
               >
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
@@ -304,7 +304,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+                className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </button>
@@ -313,11 +313,11 @@ export default function Dashboard() {
           
           {/* Mobile Navigation Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-200 py-4">
+            <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
               <div className="flex flex-col space-y-2">
                 <button
                   onClick={() => { setShowAlerts(true); setIsMobileMenuOpen(false); }}
-                  className="relative flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+                  className="relative flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md"
                 >
                   <Bell className="h-4 w-4 mr-3" />
                   Alerts
@@ -329,33 +329,33 @@ export default function Dashboard() {
                 </button>
                 <button
                   onClick={() => { setShowGoals(true); setIsMobileMenuOpen(false); }}
-                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md"
                 >
                   <Target className="h-4 w-4 mr-3" />
                   Goals
                 </button>
                 <button
                   onClick={() => { setShowRecurringTransactions(true); setIsMobileMenuOpen(false); }}
-                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md"
                 >
                   <Repeat className="h-4 w-4 mr-3" />
                   Recurring Transactions
                 </button>
                 <button
                   onClick={() => { setShowSettings(!showSettings); setIsMobileMenuOpen(false); }}
-                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-md"
+                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md"
                 >
                   <Settings className="h-4 w-4 mr-3" />
                   Settings
                 </button>
                 <button
                   onClick={() => { handleLogout(); setIsMobileMenuOpen(false); }}
-                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-red-700 hover:bg-red-50 rounded-md"
+                  className="flex items-center px-3 py-2 text-left text-sm font-medium text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 rounded-md"
                 >
                   <LogOut className="h-4 w-4 mr-3" />
                   Logout
                 </button>
-                <div className="pt-2 border-t border-gray-200">
+                <div className="pt-2 border-t border-gray-200 dark:border-gray-700">
                   <ExportButton />
                 </div>
               </div>
@@ -404,13 +404,13 @@ export default function Dashboard() {
         </div>
 
         {/* Remaining Amount */}
-        <div className="bg-white rounded-lg shadow p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
           <div className="text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Amount Left</h3>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">Amount Left</h3>
             <p className={`text-3xl font-bold ${remainingAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
               {formatCurrency(remainingAmount)}
             </p>
-            <p className="text-sm text-gray-600 mt-1">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Income - Expenses - Savings
             </p>
           </div>

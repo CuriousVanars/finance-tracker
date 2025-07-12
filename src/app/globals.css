@@ -14,16 +14,74 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #111827;
+    --foreground: #f9fafb;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Enhanced form elements for better dark mode support */
+@media (prefers-color-scheme: dark) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  input[type="date"],
+  input[type="datetime-local"],
+  input[type="time"],
+  input[type="search"],
+  input[type="tel"],
+  input[type="url"],
+  select,
+  textarea {
+    background-color: #374151 !important;
+    border-color: #6b7280 !important;
+    color: #f9fafb !important;
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  input[type="date"]:focus,
+  input[type="datetime-local"]:focus,
+  input[type="time"]:focus,
+  input[type="search"]:focus,
+  input[type="tel"]:focus,
+  input[type="url"]:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af !important;
+    opacity: 1;
+  }
+
+  /* Dark mode table styles */
+  table {
+    border-color: #374151;
+  }
+  
+  th {
+    background-color: #1f2937;
+    color: #f9fafb;
+    border-color: #374151;
+  }
+  
+  td {
+    border-color: #374151;
+  }
 }
 
 /* Responsive utilities */
@@ -34,10 +92,19 @@ body {
   @apply block md:hidden;
 }
 
-/* Mobile-friendly buttons - only apply to buttons without custom classes */
+/* Enhanced button styles */
+button {
+  @apply transition-all duration-200 ease-in-out;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  @apply dark:focus:ring-offset-gray-800;
+}
+
+/* Mobile-friendly buttons */
 button:not([class*="bg-"]):not([class*="text-"]) {
-  @apply px-3 py-2 border rounded-md;
+  @apply px-4 py-2 border rounded-md;
   @apply text-sm font-medium bg-white hover:bg-gray-50;
+  @apply dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-100 dark:border-gray-600;
+  @apply min-h-[44px] min-w-[44px]; /* Improved touch targets */
 }
 
 /* Remove number input spinner controls */
@@ -49,4 +116,30 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Enhanced focus styles for accessibility */
+*:focus {
+  outline-offset: 2px;
+}
+
+/* Improved scrollbar for dark mode */
+@media (prefers-color-scheme: dark) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #1f2937;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
 }

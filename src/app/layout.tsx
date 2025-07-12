@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   title: "Personal Finance Tracker",
   description: "Track every penny you spend or save with this comprehensive finance management app",
   keywords: "finance, budget, expense tracker, savings, income, money management",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
   themeColor: "#2563eb",
   appleWebApp: {
     capable: true,
@@ -37,6 +36,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
