@@ -157,9 +157,84 @@ export function updateGoalProgress(goals: Goal[], transactions: Transaction[]): 
   });
 }
 
-export function checkRecurringTransactionAlerts(
+/**
+ * Calculate dynamic priority for a recurring transaction based on its properties
+ */
+export function calculateTransactionPriority(
+  transaction: RecurringTransaction,
+  categories: Category[] = []
+): 'low' | 'medium' | 'high' {
+  let priorityScore = 0;
+  
+  // Amount-based priority (40% weight)
+  if (transaction.amount >= 50000) {
+    priorityScore += 40; // High amount
+  } else if (transaction.amount >= 10000) {
+    priorityScore += 25; // Medium amount
+  } else {
+    priorityScore += 10; // Low amount
+  }
+  
+  // Type-based priority (30% weight)
+  if (transaction.type === 'expense') {
+    priorityScore += 30; // Expenses are high priority
+  } else if (transaction.type === 'saving') {
+    priorityScore += 20; // Savings are medium priority
+  } else {
+    priorityScore += 10; // Income is low priority
+  }
+  
+  // Category-based priority (20% weight)
+  const criticalCategories = ['rent', 'mortgage', 'loan', 'utility', 'insurance', 'tax', 'salary'];
+  const categoryName = transaction.category.toLowerCase();
+  const isCritical = criticalCategories.some(cat => categoryName.includes(cat));
+  
+  if (isCritical) {
+    priorityScore += 20;
+  } else {
+    priorityScore += 5;
+  }
+  
+  // Frequency-based priority (10% weight)
+  if (transaction.frequency === 'monthly' || transaction.frequency === 'yearly') {
+    priorityScore += 10; // Less frequent = higher priority
+  } else {
+    priorityScore += 5; // More frequent = lower priority
+  }
+  
+  // Determine final priority
+  if (priorityScore >= 70) {
+    return 'high';
+  } else if (priorityScore >= 40) {
+    return 'medium';
+  } else {
+    return 'low';
+  }
+}
+
+/**
+ * Get alert advance days based on priority
+ */
+export function getAlertAdvanceDays(priority: 'low' | 'medium' | 'high'): number {
+  switch (priority) {
+    case 'high':
+      return 5;
+    case 'medium':
+      return 3;
+    case 'low':
+      return 1;
+    default:
+      return 1;
+  }
+}
+
+/**
+ * Generate alerts for recurring transactions with dynamic priority
+ */
+export function generateRecurringTransactionAlerts(
   recurringTransactions: RecurringTransaction[],
-  existingAlerts: Alert[]
+  existingAlerts: Alert[],
+  categories: Category[] = []
 ): Alert[] {
   const today = new Date();
   const newAlerts: Alert[] = [];
@@ -171,50 +246,67 @@ export function checkRecurringTransactionAlerts(
     const dueDate = new Date(transaction.next_due_date);
     const daysUntilDue = differenceInDays(dueDate, today);
     
-    // Check if there's already an alert for this transaction for today
+    // Calculate dynamic priority
+    const priority = calculateTransactionPriority(transaction, categories);
+    const alertAdvanceDays = getAlertAdvanceDays(priority);
+    
+    // Check for duplicate alerts (same transaction and due date)
     const existingAlert = existingAlerts.find(alert => 
       alert.type === 'recurring_due' &&
-      alert.message.includes(transaction.name) &&
-      new Date(alert.created_at).toDateString() === today.toDateString()
+      alert.transactionId === transaction.id &&
+      alert.dueDate === transaction.next_due_date
     );
     
     if (!existingAlert) {
-      // Create alert if transaction is due today
-      if (isToday(dueDate)) {
+      // Create alert if we're in the alert window
+      if (daysUntilDue <= alertAdvanceDays && daysUntilDue >= 0) {
+        const alertTitle = `${transaction.name} Due Soon`;
+        let alertMessage = '';
+        
+        if (daysUntilDue === 0) {
+          alertMessage = `"${transaction.name}" is due today! Amount: ${formatCurrency(transaction.amount)}`;
+        } else if (daysUntilDue === 1) {
+          alertMessage = `"${transaction.name}" is due tomorrow. Amount: ${formatCurrency(transaction.amount)}`;
+        } else {
+          alertMessage = `"${transaction.name}" is due in ${daysUntilDue} days. Amount: ${formatCurrency(transaction.amount)}`;
+        }
+        
         newAlerts.push({
           id: uuidv4(),
           type: 'recurring_due',
-          message: `Recurring transaction "${transaction.name}" is due today!`,
+          title: alertTitle,
+          message: alertMessage,
+          dueDate: transaction.next_due_date,
+          priority: priority,
+          isRead: false,
+          transactionId: transaction.id,
           category: transaction.category,
           amount: transaction.amount,
           created_at: new Date().toISOString(),
+          // Legacy fields for backward compatibility
           is_read: false,
-          severity: 'high'
+          severity: priority
         });
       }
-      // Create alert if transaction is due in 1-3 days
-      else if (daysUntilDue >= 1 && daysUntilDue <= 3) {
-        newAlerts.push({
-          id: uuidv4(),
-          type: 'recurring_due',
-          message: `Recurring transaction "${transaction.name}" is due in ${daysUntilDue} day${daysUntilDue === 1 ? '' : 's'}`,
-          category: transaction.category,
-          amount: transaction.amount,
-          created_at: new Date().toISOString(),
-          is_read: false,
-          severity: daysUntilDue === 1 ? 'high' : 'medium'
-        });
-      }
-      // Create alert if transaction is overdue
+      // Create overdue alert
       else if (daysUntilDue < 0) {
         const overdueDays = Math.abs(daysUntilDue);
+        const alertTitle = `${transaction.name} Overdue`;
+        const alertMessage = `"${transaction.name}" is overdue by ${overdueDays} day${overdueDays === 1 ? '' : 's'}! Amount: ${formatCurrency(transaction.amount)}`;
+        
         newAlerts.push({
           id: uuidv4(),
           type: 'recurring_due',
-          message: `Recurring transaction "${transaction.name}" is overdue by ${overdueDays} day${overdueDays === 1 ? '' : 's'}!`,
+          title: alertTitle,
+          message: alertMessage,
+          dueDate: transaction.next_due_date,
+          priority: 'high', // Overdue alerts are always high priority
+          isRead: false,
+          transactionId: transaction.id,
           category: transaction.category,
           amount: transaction.amount,
           created_at: new Date().toISOString(),
+          // Legacy fields for backward compatibility
           is_read: false,
           severity: 'high'
         });
@@ -223,6 +315,16 @@ export function checkRecurringTransactionAlerts(
   });
   
   return [...existingAlerts, ...newAlerts];
+}
+
+/**
+ * Legacy function for backward compatibility - now uses the new system
+ */
+export function checkRecurringTransactionAlerts(
+  recurringTransactions: RecurringTransaction[],
+  existingAlerts: Alert[]
+): Alert[] {
+  return generateRecurringTransactionAlerts(recurringTransactions, existingAlerts);
 }
 
 export function updateRecurringTransactionDates(

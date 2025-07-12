@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Transaction, Category, DashboardData, Goal, RecurringTransaction, Alert } from '@/types';
 import { LocalStorage } from '@/utils/storage';
-import { calculateDashboardData, formatCurrency, getCurrentMonth, getCurrentYear, updateGoalProgress, checkRecurringTransactionAlerts } from '@/utils/calculations';
+import { calculateDashboardData, formatCurrency, getCurrentMonth, getCurrentYear, updateGoalProgress, checkRecurringTransactionAlerts, generateRecurringTransactionAlerts } from '@/utils/calculations';
 import { useAuth } from '@/hooks/useAuth';
 import { MonthSelector } from './MonthSelector';
 import { SummaryCard } from './SummaryCard';
@@ -17,7 +17,8 @@ import { Goals } from './Goals';
 import { RecurringTransactions } from './RecurringTransactions';
 import { Alerts } from './Alerts';
 import { GoalsProgress } from './GoalsProgress';
-import { Plus, RefreshCw, Settings, Target, Repeat, Bell, Menu, X, LogOut } from 'lucide-react';
+import { Plus, RefreshCw, Settings, Target, Repeat, Menu, X, LogOut } from 'lucide-react';
+import { NotificationBell } from './NotificationBell';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Dashboard() {
@@ -67,15 +68,15 @@ export default function Dashboard() {
   }, [transactions, goals]);
 
   useEffect(() => {
-    // Check for recurring transaction alerts
+    // Check for recurring transaction alerts with enhanced system
     if (recurringTransactions.length > 0) {
-      const updatedAlerts = checkRecurringTransactionAlerts(recurringTransactions, alerts);
+      const updatedAlerts = generateRecurringTransactionAlerts(recurringTransactions, alerts, categories);
       if (updatedAlerts.length !== alerts.length) {
         setAlerts(updatedAlerts);
         LocalStorage.saveAlerts(updatedAlerts);
       }
     }
-  }, [recurringTransactions, alerts]);
+  }, [recurringTransactions, alerts, categories]);
 
   const loadData = () => {
     const loadedTransactions = LocalStorage.getTransactions();
@@ -89,9 +90,9 @@ export default function Dashboard() {
     setGoals(loadedGoals);
     setRecurringTransactions(loadedRecurringTransactions);
     
-    // Check for new alerts from recurring transactions
+    // Check for new alerts from recurring transactions using enhanced system
     if (loadedRecurringTransactions.length > 0) {
-      const updatedAlerts = checkRecurringTransactionAlerts(loadedRecurringTransactions, loadedAlerts);
+      const updatedAlerts = generateRecurringTransactionAlerts(loadedRecurringTransactions, loadedAlerts, loadedCategories);
       setAlerts(updatedAlerts);
       if (updatedAlerts.length !== loadedAlerts.length) {
         LocalStorage.saveAlerts(updatedAlerts);
@@ -245,18 +246,13 @@ export default function Dashboard() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-3">
               <ExportButton />
-              <button
+              <NotificationBell
+                alerts={alerts}
                 onClick={() => setShowAlerts(true)}
-                className="relative inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                <Bell className="h-4 w-4 mr-2" />
-                Alerts
-                {alerts.filter(alert => !alert.is_read).length > 0 && (
-                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                    {alerts.filter(alert => !alert.is_read).length}
-                  </span>
-                )}
-              </button>
+                variant="button"
+                badgePosition="top-right"
+                size="md"
+              />
               <button
                 onClick={() => setShowGoals(true)}
                 className="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -296,6 +292,12 @@ export default function Dashboard() {
             
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center space-x-2">
+              <NotificationBell
+                alerts={alerts}
+                onClick={() => setShowAlerts(true)}
+                variant="icon-only"
+                size="md"
+              />
               <button
                 onClick={() => setShowTransactionForm(true)}
                 className="inline-flex items-center px-3 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -315,18 +317,14 @@ export default function Dashboard() {
           {isMobileMenuOpen && (
             <div className="md:hidden border-t border-gray-200 dark:border-gray-700 py-4">
               <div className="flex flex-col space-y-2">
-                <button
+                <NotificationBell
+                  alerts={alerts}
                   onClick={() => { setShowAlerts(true); setIsMobileMenuOpen(false); }}
-                  className="relative flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md"
-                >
-                  <Bell className="h-4 w-4 mr-3" />
-                  Alerts
-                  {alerts.filter(alert => !alert.is_read).length > 0 && (
-                    <span className="ml-auto h-4 w-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                      {alerts.filter(alert => !alert.is_read).length}
-                    </span>
-                  )}
-                </button>
+                  variant="button"
+                  badgePosition="right"
+                  size="md"
+                  className="w-full justify-start text-left"
+                />
                 <button
                   onClick={() => { setShowGoals(true); setIsMobileMenuOpen(false); }}
                   className="flex items-center px-3 py-2 text-left text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md"

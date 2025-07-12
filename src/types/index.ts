@@ -65,12 +65,18 @@ export interface RecurringTransaction {
 export interface Alert {
   id: string;
   type: 'budget_warning' | 'goal_reminder' | 'recurring_due' | 'unusual_expense';
+  title: string;
   message: string;
+  dueDate?: string;
+  priority: 'low' | 'medium' | 'high';
+  isRead: boolean;
+  transactionId?: string;
   category?: string;
   amount?: number;
   created_at: string;
-  is_read: boolean;
-  severity: 'low' | 'medium' | 'high';
+  // Legacy fields for backward compatibility
+  is_read?: boolean;
+  severity?: 'low' | 'medium' | 'high';
 }
 
 export interface DashboardData {
