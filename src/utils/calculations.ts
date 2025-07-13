@@ -1,5 +1,5 @@
 import { Transaction, Category, MonthlySummary, CategorySummary, DashboardData, Goal, RecurringTransaction, Alert } from '@/types';
-import { format, startOfMonth, endOfMonth, isWithinInterval, differenceInDays, isToday, isBefore } from 'date-fns';
+import { format, startOfMonth, endOfMonth, isWithinInterval, differenceInDays, isBefore } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 
 export function calculateMonthlySummary(
@@ -161,8 +161,7 @@ export function updateGoalProgress(goals: Goal[], transactions: Transaction[]): 
  * Calculate dynamic priority for a recurring transaction based on its properties
  */
 export function calculateTransactionPriority(
-  transaction: RecurringTransaction,
-  categories: Category[] = []
+  transaction: RecurringTransaction
 ): 'low' | 'medium' | 'high' {
   let priorityScore = 0;
   
@@ -233,8 +232,7 @@ export function getAlertAdvanceDays(priority: 'low' | 'medium' | 'high'): number
  */
 export function generateRecurringTransactionAlerts(
   recurringTransactions: RecurringTransaction[],
-  existingAlerts: Alert[],
-  categories: Category[] = []
+  existingAlerts: Alert[]
 ): Alert[] {
   const today = new Date();
   const newAlerts: Alert[] = [];
@@ -247,7 +245,7 @@ export function generateRecurringTransactionAlerts(
     const daysUntilDue = differenceInDays(dueDate, today);
     
     // Calculate dynamic priority
-    const priority = calculateTransactionPriority(transaction, categories);
+    const priority = calculateTransactionPriority(transaction);
     const alertAdvanceDays = getAlertAdvanceDays(priority);
     
     // Check for duplicate alerts (same transaction and due date)
@@ -317,15 +315,6 @@ export function generateRecurringTransactionAlerts(
   return [...existingAlerts, ...newAlerts];
 }
 
-/**
- * Legacy function for backward compatibility - now uses the new system
- */
-export function checkRecurringTransactionAlerts(
-  recurringTransactions: RecurringTransaction[],
-  existingAlerts: Alert[]
-): Alert[] {
-  return generateRecurringTransactionAlerts(recurringTransactions, existingAlerts);
-}
 
 export function updateRecurringTransactionDates(
   recurringTransactions: RecurringTransaction[]

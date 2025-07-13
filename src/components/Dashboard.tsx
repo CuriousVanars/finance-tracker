@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Transaction, Category, DashboardData, Goal, RecurringTransaction, Alert } from '@/types';
 import { LocalStorage } from '@/utils/storage';
-import { calculateDashboardData, formatCurrency, getCurrentMonth, getCurrentYear, updateGoalProgress, checkRecurringTransactionAlerts, generateRecurringTransactionAlerts } from '@/utils/calculations';
+import { calculateDashboardData, formatCurrency, getCurrentMonth, getCurrentYear, updateGoalProgress, generateRecurringTransactionAlerts } from '@/utils/calculations';
 import { useAuth } from '@/hooks/useAuth';
 import { MonthSelector } from './MonthSelector';
 import { SummaryCard } from './SummaryCard';
@@ -70,13 +70,13 @@ export default function Dashboard() {
   useEffect(() => {
     // Check for recurring transaction alerts with enhanced system
     if (recurringTransactions.length > 0) {
-      const updatedAlerts = generateRecurringTransactionAlerts(recurringTransactions, alerts, categories);
+      const updatedAlerts = generateRecurringTransactionAlerts(recurringTransactions, alerts);
       if (updatedAlerts.length !== alerts.length) {
         setAlerts(updatedAlerts);
         LocalStorage.saveAlerts(updatedAlerts);
       }
     }
-  }, [recurringTransactions, alerts, categories]);
+  }, [recurringTransactions, alerts]);
 
   const loadData = () => {
     const loadedTransactions = LocalStorage.getTransactions();
@@ -92,7 +92,7 @@ export default function Dashboard() {
     
     // Check for new alerts from recurring transactions using enhanced system
     if (loadedRecurringTransactions.length > 0) {
-      const updatedAlerts = generateRecurringTransactionAlerts(loadedRecurringTransactions, loadedAlerts, loadedCategories);
+      const updatedAlerts = generateRecurringTransactionAlerts(loadedRecurringTransactions, loadedAlerts);
       setAlerts(updatedAlerts);
       if (updatedAlerts.length !== loadedAlerts.length) {
         LocalStorage.saveAlerts(updatedAlerts);
